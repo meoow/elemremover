@@ -1,6 +1,6 @@
 #Element Remover
 
-A reborn of the old tag remover.
+Rewrite the old tag remover.
 
 This little utility is used to match and delete specific tags and all the children from HTML pages.
 
