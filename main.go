@@ -36,24 +36,25 @@ func main() {
 
 	path := flag.Arg(0)
 	for _, f := range flag.Args()[1:] {
+		func() {
 		found := 0
 		fh, err := os.Open(f)
 		if err != nil {
 			log.Print(err)
-			continue
+			return
 		}
 		defer fh.Close()
 		root, err := html.Parse(fh)
 		if err != nil {
 			log.Print(err)
-			continue
+			return
 		}
 		for _, p := range strings.Split(path, ":::") {
 			tags := nodefinder.NewPath(p)
 			nodes := nodefinder.FindByNode(tags, root)
 			if err != nil {
 				log.Print(err)
-				continue
+				return
 			}
 			for _, n := range nodes {
 				if n.Parent != nil {
@@ -70,19 +71,20 @@ func main() {
 			tempfile, err := ioutil.TempFile(filepath.Dir(f), "htmlcleaner")
 			if err != nil {
 				log.Print(err)
-				continue
+				return
 			}
 			err = html.Render(tempfile, root)
 			if err != nil {
 				log.Print(err)
-				continue
+				return
 			}
 			tempfile.Close()
 			err = os.Rename(tempfile.Name(), f)
 			if err != nil {
 				log.Print(err)
-				continue
+				return
 			}
 		}
+	}()
 	}
 }
